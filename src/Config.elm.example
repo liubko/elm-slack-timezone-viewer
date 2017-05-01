@@ -1,0 +1,6 @@
+module Config exposing (slack_token)
+
+
+slack_token : String
+slack_token =
+    "..."
