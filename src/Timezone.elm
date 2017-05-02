@@ -2,8 +2,7 @@ module Timezone exposing (timezones, Timezone)
 
 
 type alias Timezone =
-    { value : String
-    , abbr : String
+    { utc : String
     , offset : Float
     , text : String
     }
@@ -11,164 +10,132 @@ type alias Timezone =
 
 timezones : List Timezone
 timezones =
-    [ { value = "Dateline Standard Time"
-      , abbr = "DST"
-      , offset = -12
-      , text = "(UTC-12:00) International Date Line West"
+    [ { offset = -12
+      , text = "International Date Line West"
+      , utc = "(UTC-12:00)"
       }
-    , { value = "UTC-11"
-      , abbr = "U"
-      , offset = -11
-      , text = "(UTC-11:00) Coordinated Universal Time-11"
+    , { offset = -11
+      , text = "Coordinated Universal Time-11"
+      , utc = "(UTC-11:00)"
       }
-    , { value = "Hawaiian Standard Time"
-      , abbr = "HST"
-      , offset = -10
-      , text = "(UTC-10:00) Hawaii"
+    , { offset = -10
+      , text = "Hawaii"
+      , utc = "(UTC-10:00)"
       }
-    , { value = "Alaskan Standard Time"
-      , abbr = "AKDT"
-      , offset = -8
-      , text = "(UTC-09:00) Alaska"
+    , { offset = -8
+      , text = "Alaska"
+      , utc = "(UTC-09:00)"
       }
-    , { value = "Pacific Standard Time"
-      , abbr = "PDT"
-      , offset = -7
-      , text = "(UTC-08:00) Pacific Time (US & Canada)"
+    , { offset = -7
+      , text = "Pacific Time (US & Canada)"
+      , utc = "(UTC-08:00)"
       }
-    , { value = "Central America Standard Time"
-      , abbr = "CAST"
-      , offset = -6
-      , text = "(UTC-06:00) Central America"
+    , { offset = -6
+      , text = "Central America"
+      , utc = "(UTC-06:00)"
       }
-    , { value = "Central Standard Time"
-      , abbr = "CDT"
-      , offset = -5
-      , text = "(UTC-06:00) Central Time (US & Canada)"
+    , { offset = -5
+      , text = "Central Time (US & Canada)"
+      , utc = "(UTC-06:00)"
       }
-    , { value = "Eastern Standard Time"
-      , abbr = "EDT"
-      , offset = -4
-      , text = "(UTC-05:00) Eastern Time (US & Canada)"
+    , { offset = -4
+      , text = "Eastern Time (US & Canada)"
+      , utc = "(UTC-05:00)"
       }
-    , { value = "Atlantic Standard Time"
-      , abbr = "ADT"
-      , offset = -3
-      , text = "(UTC-04:00) Atlantic Time (Canada)"
+    , { offset = -3
+      , text = "Atlantic Time (Canada)"
+      , utc = "(UTC-04:00)"
       }
-    , { value = "Newfoundland Standard Time"
-      , abbr = "NDT"
-      , offset = -2.5
-      , text = "(UTC-03:30) Newfoundland"
+    , { offset = -2.5
+      , text = "Newfoundland"
+      , utc = "(UTC-03:30)"
       }
-    , { value = "Greenland Standard Time"
-      , abbr = "GDT"
-      , offset = -2
-      , text = "(UTC-03:00) Greenland"
+    , { offset = -2
+      , text = "Greenland"
+      , utc = "(UTC-03:00)"
       }
-    , { value = "Mid-Atlantic Standard Time"
-      , abbr = "MDT"
-      , offset = -1
-      , text = "(UTC-02:00) Mid-Atlantic - Old"
+    , { offset = -1
+      , text = "Mid-Atlantic - Old"
+      , utc = "(UTC-02:00)"
       }
-    , { value = "UTC"
-      , abbr = "CUT"
-      , offset = 0
-      , text = "(UTC) Coordinated Universal Time"
+    , { offset = 0
+      , text = "Coordinated Universal Time"
+      , utc = "(UTC)"
       }
-    , { value = "GMT Standard Time"
-      , abbr = "GDT"
-      , offset = 1
-      , text = "(UTC) Dublin, Edinburgh, Lisbon, London"
+    , { offset = 1
+      , text = "Dublin, Edinburgh, Lisbon, London"
+      , utc = "(UTC)"
       }
-    , { value = "W. Europe Standard Time"
-      , abbr = "WEDT"
-      , offset = 2
-      , text = "(UTC+01:00) Amsterdam, Berlin, Bern, Rome, Stockholm, Vienna"
+    , { offset = 2
+      , text = "Amsterdam, Berlin, Bern, Rome, Stockholm, Vienna"
+      , utc = "(UTC+01:00)"
       }
-    , { value = "FLE Standard Time"
-      , abbr = "FDT"
-      , offset = 3
-      , text = "(UTC+02:00) Helsinki, Kyiv, Riga, Sofia, Tallinn, Vilnius"
+    , { offset = 3
+      , text = "Helsinki, Kyiv, Riga, Sofia, Tallinn, Vilnius"
+      , utc = "(UTC+02:00)"
       }
-    , { value = "Russian Standard Time"
-      , abbr = "RST"
-      , offset = 4
-      , text = "(UTC+04:00) Moscow, St. Petersburg, Volgograd"
+    , { offset = 4
+      , text = "Moscow, St. Petersburg, Volgograd"
+      , utc = "(UTC+04:00)"
       }
-    , { value = "Afghanistan Standard Time"
-      , abbr = "AST"
-      , offset = 4.5
-      , text = "(UTC+04:30) Kabul"
+    , { offset = 4.5
+      , text = "Kabul"
+      , utc = "(UTC+04:30)"
       }
-    , { value = "West Asia Standard Time"
-      , abbr = "WAST"
-      , offset = 5
-      , text = "(UTC+05:00) Ashgabat, Tashkent"
+    , { offset = 5
+      , text = "Ashgabat, Tashkent"
+      , utc = "(UTC+05:00)"
       }
-    , { value = "India Standard Time"
-      , abbr = "IST"
-      , offset = 5.5
-      , text = "(UTC+05:30) Chennai, Kolkata, Mumbai, New Delhi"
+    , { offset = 5.5
+      , text = "Chennai, Kolkata, Mumbai, New Delhi"
+      , utc = "(UTC+05:30)"
       }
-    , { value = "Nepal Standard Time"
-      , abbr = "NST"
-      , offset = 5.75
-      , text = "(UTC+05:45) Kathmandu"
+    , { offset = 5.75
+      , text = "Kathmandu"
+      , utc = "(UTC+05:45)"
       }
-    , { value = "Central Asia Standard Time"
-      , abbr = "CAST"
-      , offset = 6
-      , text = "(UTC+06:00) Astana"
+    , { offset = 6
+      , text = "Astana"
+      , utc = "(UTC+06:00)"
       }
-    , { value = "Myanmar Standard Time"
-      , abbr = "MST"
-      , offset = 6.5
-      , text = "(UTC+06:30) Yangon (Rangoon)"
+    , { offset = 6.5
+      , text = "Yangon (Rangoon)"
+      , utc = "(UTC+06:30)"
       }
-    , { value = "SE Asia Standard Time"
-      , abbr = "SAST"
-      , offset = 7
-      , text = "(UTC+07:00) Bangkok, Hanoi, Jakarta"
+    , { offset = 7
+      , text = "Bangkok, Hanoi, Jakarta"
+      , utc = "(UTC+07:00)"
       }
-    , { value = "Singapore Standard Time"
-      , abbr = "MPST"
-      , offset = 8
-      , text = "(UTC+08:00) Kuala Lumpur, Singapore"
+    , { offset = 8
+      , text = "Kuala Lumpur, Singapore"
+      , utc = "(UTC+08:00)"
       }
-    , { value = "Tokyo Standard Time"
-      , abbr = "TST"
-      , offset = 9
-      , text = "(UTC+09:00) Osaka, Sapporo, Tokyo"
+    , { offset = 9
+      , text = "Osaka, Sapporo, Tokyo"
+      , utc = "(UTC+09:00)"
       }
-    , { value = "Cen. Australia Standard Time"
-      , abbr = "CAST"
-      , offset = 9.5
-      , text = "(UTC+09:30) Adelaide"
+    , { offset = 9.5
+      , text = "Adelaide"
+      , utc = "(UTC+09:30)"
       }
-    , { value = "AUS Eastern Standard Time"
-      , abbr = "AEST"
-      , offset = 10
-      , text = "(UTC+10:00) Canberra, Melbourne, Sydney"
+    , { offset = 10
+      , text = "Canberra, Melbourne, Sydney"
+      , utc = "(UTC+10:00)"
       }
-    , { value = "Vladivostok Standard Time"
-      , abbr = "VST"
-      , offset = 11
-      , text = "(UTC+11:00) Vladivostok"
+    , { offset = 11
+      , text = "Vladivostok"
+      , utc = "(UTC+11:00)"
       }
-    , { value = "New Zealand Standard Time"
-      , abbr = "NZST"
-      , offset = 12
-      , text = "(UTC+12:00) Auckland, Wellington"
+    , { offset = 12
+      , text = "Auckland, Wellington"
+      , utc = "(UTC+12:00)"
       }
-    , { value = "Fiji Standard Time"
-      , abbr = "FST"
-      , offset = 12
-      , text = "(UTC+12:00) Fiji"
+    , { offset = 12
+      , text = "Fiji"
+      , utc = "(UTC+12:00)"
       }
-    , { value = "Tonga Standard Time"
-      , abbr = "TST"
-      , offset = 13
-      , text = "(UTC+13:00) Nuku'alofa"
+    , { offset = 13
+      , text = "Nuku'alofa"
+      , utc = "(UTC+13:00)"
       }
     ]

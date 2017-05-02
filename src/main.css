@@ -1,12 +1,5 @@
-body {
-  font-family: 'Source Sans Pro', 'Trebuchet MS', 'Lucida Grande', 'Bitstream Vera Sans', 'Helvetica Neue', sans-serif;
-  font-size: 30px;
-  margin: 0;
-  text-align: center;
-  color: #293c4b;
-}
-
-img {
-  margin: 20px 0;
-  max-width: 200px;
+.tile.is-ancestor .tile {
+  flex-direction: column;
+  max-width: 124px;
+  padding: 0 10px;
 }

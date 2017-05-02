@@ -2,8 +2,8 @@ module App exposing (..)
 
 import Config
 import Timezone exposing (timezones, Timezone)
-import Html exposing (Html, text, div, img, ul, li)
-import Html.Attributes exposing (src, style)
+import Html exposing (Html, text, div, img, ul, li, section, h1, h2, footer, p, strong, a, i, span)
+import Html.Attributes exposing (src, style, class, href)
 import Http
 import Json.Decode exposing (Decoder)
 import Json.Decode.Pipeline exposing (..)
@@ -104,9 +104,18 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    div []
+    div [ class "page-layout" ]
+        [ renderHeader
+        , renderContent model
+        , renderFooter
+        ]
+
+
+renderContent : Model -> Html Msg
+renderContent model =
+    section []
         [ (renderError model.fetchUsersError)
-        , ul [] (List.map (\timezone -> renderTimezone timezone model.users) model.timezones)
+        , div [] (List.map (\timezone -> renderTimezone timezone model.users) model.timezones)
         ]
 
 
@@ -117,15 +126,59 @@ renderError err =
         ]
 
 
+renderHeader : Html Msg
+renderHeader =
+    section [ class "hero is-info is-bold" ]
+        [ div [ class "hero-body" ]
+            [ div [ class "container" ]
+                [ h1 [ class "title" ]
+                    [ text "Primary title" ]
+                , h2 [ class "subtitle" ]
+                    [ text "Primary subtitle" ]
+                ]
+            ]
+        ]
+
+
+renderFooter : Html Msg
+renderFooter =
+    footer [ class "footer" ]
+        [ div [ class "container" ]
+            [ div [ class "content has-text-centered" ]
+                [ p []
+                    [ strong []
+                        [ text "Bulma by" ]
+                    , a [ href "http://jgthms.com" ]
+                        [ text "Jeremy Thomas. The source code is licensed" ]
+                    , a [ href "http://opensource.org/licenses/mit-license.php" ]
+                        [ text "MIT. The website content\n        is licensed" ]
+                    , a [ href "http://creativecommons.org/licenses/by-nc-sa/4.0/" ]
+                        [ text "CC ANS 4.0." ]
+                    ]
+                , p []
+                    [ a [ class "icon", href "https://github.com/jgthms/bulma" ]
+                        [ i [ class "fa fa-github" ]
+                            []
+                        ]
+                    ]
+                ]
+            ]
+        ]
+
+
 renderTimezone : Timezone -> List User -> Html Msg
 renderTimezone timezone users =
-    li []
-        [ div []
-            [ text (timezone.text ++ " ")
+    div [ class "card" ]
+        [ div [ class "columns card-content" ]
+            [ div [ class "column is-one-quarter" ]
+                [ p [ class "title" ]
+                    [ text timezone.utc ]
+                , p [ class "subtitle" ]
+                    [ text timezone.text ]
+                ]
+            , div [ class "column tile is-ancestor" ]
+                (List.map renderUser (getUsersInTimeZone timezone.offset users))
             ]
-        , div
-            []
-            (List.map renderUser (getUsersInTimeZone timezone.offset users))
         ]
 
 
@@ -137,11 +190,14 @@ renderUser user =
                 "green"
             else
                 "red"
+
+        -- style [ ( "color", textColor ) ]
     in
-        div
-            [ style [ ( "color", textColor ) ] ]
-            [ text (user.name ++ " ")
-            , img [ src user.image ] []
+        div [ class "tile" ]
+            [ img [ src user.image ]
+                []
+            , strong []
+                [ text user.name ]
             ]
 
 
