@@ -1,5 +1,27 @@
-.tile.is-ancestor .tile {
+.userList {
+  justify-content: space-between;
+}
+.userList:after {
+  content: "";
+  flex: auto;
+}
+
+.user {
+  text-align: center;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  cursor: pointer;
   flex-direction: column;
-  max-width: 124px;
-  padding: 0 10px;
+  max-width: 106px;
+  min-width: 106px;
+  padding: 10px;
+}
+
+.user img {
+  border-radius: 50%;
+  box-shadow: 0 2px 3px rgba(10,10,10,.1), 0 0 0 1px rgba(10,10,10,.1);
+}
+
+.settings input[type="checkbox"] {
+  margin-right: 10px;
 }

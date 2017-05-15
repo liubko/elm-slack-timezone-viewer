@@ -2,8 +2,9 @@ module App exposing (..)
 
 import Config
 import Timezone exposing (timezones, Timezone)
-import Html exposing (Html, text, div, img, ul, li, section, h1, h2, footer, p, strong, a, i, span)
-import Html.Attributes exposing (src, style, class, href)
+import Html exposing (Html, text, div, img, ul, li, section, h1, h2, footer, p, strong, a, i, span, label, input, header, br, nav)
+import Html.Attributes exposing (src, style, class, href, title, type_, checked)
+import Html.Events exposing (onClick)
 import Http
 import Json.Decode exposing (Decoder)
 import Json.Decode.Pipeline exposing (..)
@@ -22,6 +23,7 @@ type alias Model =
     { users : List User
     , fetchUsersError : String
     , timezones : List Timezone
+    , showEmptyTZ : Bool
     }
 
 
@@ -30,6 +32,7 @@ initialModel =
     { users = []
     , fetchUsersError = ""
     , timezones = timezones
+    , showEmptyTZ = False
     }
 
 
@@ -59,6 +62,7 @@ responseDecoder =
 type Msg
     = FetchUsers
     | HandleFetchUsersResponse (Result Http.Error (List User))
+    | ToggleShowEmptyZones
 
 
 fetchUsers : Cmd Msg
@@ -97,6 +101,9 @@ update msg model =
             in
                 ( { model | fetchUsersError = "Can't fetch users :(" }, Cmd.none )
 
+        ToggleShowEmptyZones ->
+            ( { model | showEmptyTZ = not model.showEmptyTZ }, Cmd.none )
+
 
 
 ---- VIEW ----
@@ -105,9 +112,9 @@ update msg model =
 view : Model -> Html Msg
 view model =
     div [ class "page-layout" ]
-        [ renderHeader
+        [ renderNavbar
+        , renderHero
         , renderContent model
-        , renderFooter
         ]
 
 
@@ -115,7 +122,7 @@ renderContent : Model -> Html Msg
 renderContent model =
     section []
         [ (renderError model.fetchUsersError)
-        , div [] (List.map (\timezone -> renderTimezone timezone model.users) model.timezones)
+        , section [ class "section" ] (List.map (\tz -> renderTZ tz model.users model.showEmptyTZ) model.timezones)
         ]
 
 
@@ -126,39 +133,37 @@ renderError err =
         ]
 
 
-renderHeader : Html Msg
-renderHeader =
-    section [ class "hero is-info is-bold" ]
-        [ div [ class "hero-body" ]
-            [ div [ class "container" ]
-                [ h1 [ class "title" ]
-                    [ text "Primary title" ]
-                , h2 [ class "subtitle" ]
-                    [ text "Primary subtitle" ]
-                ]
+renderNavbar : Html Msg
+renderNavbar =
+    nav [ class "nav" ]
+        [ div [ class "nav-left" ]
+            [ a [ class "nav-item", href "#" ]
+                [ text "elm-slack-tz-viewer" ]
+            ]
+        , div [ class "nav-right nav-menu" ]
+            [ a [ class "nav-item", href "https://github.com/liubko/elm-slack-timezone-viewer" ]
+                [ span [ class "icon" ] [ i [ class "fa fa-github" ] [] ] ]
             ]
         ]
 
 
-renderFooter : Html Msg
-renderFooter =
-    footer [ class "footer" ]
-        [ div [ class "container" ]
-            [ div [ class "content has-text-centered" ]
-                [ p []
-                    [ strong []
-                        [ text "Bulma by" ]
-                    , a [ href "http://jgthms.com" ]
-                        [ text "Jeremy Thomas. The source code is licensed" ]
-                    , a [ href "http://opensource.org/licenses/mit-license.php" ]
-                        [ text "MIT. The website content\n        is licensed" ]
-                    , a [ href "http://creativecommons.org/licenses/by-nc-sa/4.0/" ]
-                        [ text "CC ANS 4.0." ]
-                    ]
-                , p []
-                    [ a [ class "icon", href "https://github.com/jgthms/bulma" ]
-                        [ i [ class "fa fa-github" ]
-                            []
+renderHero : Html Msg
+renderHero =
+    section [ class "hero is-info is-bold" ]
+        [ div [ class "hero-body" ]
+            [ div [ class "container" ]
+                [ div [ class "columns is-vcentered" ]
+                    [ div [ class "column" ] [ p [ class "title" ] [ text "Ahrefs team by TZ" ] ]
+                    , div [ class "column is-one-quarter" ]
+                        [ div [ class "card settings" ]
+                            [ header [ class "card-header" ] [ p [ class "card-header-title" ] [ text "Settings" ] ]
+                            , div [ class "card-content" ]
+                                [ div [ class "content" ]
+                                    [ label [ class "checkbox" ]
+                                        [ renderCheckbox ToggleShowEmptyZones "Show empty TZ" ]
+                                    ]
+                                ]
+                            ]
                         ]
                     ]
                 ]
@@ -166,20 +171,48 @@ renderFooter =
         ]
 
 
-renderTimezone : Timezone -> List User -> Html Msg
-renderTimezone timezone users =
-    div [ class "card" ]
-        [ div [ class "columns card-content" ]
-            [ div [ class "column is-one-quarter" ]
-                [ p [ class "title" ]
-                    [ text timezone.utc ]
-                , p [ class "subtitle" ]
-                    [ text timezone.text ]
-                ]
-            , div [ class "column tile is-ancestor" ]
-                (List.map renderUser (getUsersInTimeZone timezone.offset users))
-            ]
+renderCheckbox : msg -> String -> Html msg
+renderCheckbox msg name =
+    label []
+        [ input [ type_ "checkbox", onClick msg ] []
+        , text name
         ]
+
+
+renderTZ : Timezone -> List User -> Bool -> Html Msg
+renderTZ tz users showEmptyTZ =
+    let
+        usersInTZ =
+            getUsersInTZ tz.offset users
+
+        isTZEmpty =
+            List.length usersInTZ <= 0
+
+        tzNode =
+            div [ class "card" ]
+                [ div [ class "card-content" ]
+                    [ div [ class "columns card-content" ]
+                        [ div [ class "column is-one-quarter" ]
+                            [ p [ class "title" ]
+                                [ text tz.utc ]
+                            , p [ class "subtitle" ]
+                                [ text tz.text ]
+                            ]
+                        , div [ class "column columns is-multiline userList" ]
+                            (List.map renderUser usersInTZ)
+                        ]
+                    ]
+                ]
+    in
+        case ( isTZEmpty, showEmptyTZ ) of
+            ( _, True ) ->
+                tzNode
+
+            ( False, False ) ->
+                tzNode
+
+            ( True, False ) ->
+                div [] []
 
 
 renderUser : User -> Html Msg
@@ -193,11 +226,11 @@ renderUser user =
 
         -- style [ ( "color", textColor ) ]
     in
-        div [ class "tile" ]
+        div [ class "user is-narrow column" ]
             [ img [ src user.image ]
                 []
-            , strong []
-                [ text user.name ]
+            , br [] []
+            , span [] [ text user.name ]
             ]
 
 
@@ -205,8 +238,8 @@ renderUser user =
 ---- PROGRAM ----
 
 
-getUsersInTimeZone : Float -> List User -> List User
-getUsersInTimeZone tzOffset users =
+getUsersInTZ : Float -> List User -> List User
+getUsersInTZ tzOffset users =
     List.filter (\user -> user.tzOffset == tzOffset) users
 
 
