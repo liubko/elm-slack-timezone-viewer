@@ -3,7 +3,7 @@ module App exposing (..)
 import Config
 import Timezone exposing (timezones, Timezone)
 import Html exposing (Html, text, div, img, ul, li, section, h1, h2, footer, p, strong, a, i, span, label, input, header, br, nav)
-import Html.Attributes exposing (src, style, class, href, title, type_, checked)
+import Html.Attributes exposing (src, style, class, href, title, type_, checked, target)
 import Html.Events exposing (onClick)
 import Http
 import Json.Decode exposing (Decoder)
@@ -12,6 +12,7 @@ import Json.Decode.Pipeline exposing (..)
 
 type alias User =
     { id : String
+    , slackId : String
     , name : String
     , presence : String
     , tzOffset : Float
@@ -47,6 +48,7 @@ responseDecoder =
         userDecoder =
             decode User
                 |> required "id" Json.Decode.string
+                |> required "name" Json.Decode.string
                 |> optional "real_name" Json.Decode.string ""
                 |> optional "presence" Json.Decode.string ""
                 |> optional "tz_offset" Json.Decode.float 0
@@ -141,7 +143,7 @@ renderNavbar =
                 [ text "elm-slack-tz-viewer" ]
             ]
         , div [ class "nav-right nav-menu" ]
-            [ a [ class "nav-item", href "https://github.com/liubko/elm-slack-timezone-viewer" ]
+            [ a [ class "nav-item", href "https://github.com/liubko/elm-slack-timezone-viewer", target "_blank" ]
                 [ span [ class "icon" ] [ i [ class "fa fa-github" ] [] ] ]
             ]
         ]
@@ -149,7 +151,7 @@ renderNavbar =
 
 renderHero : Html Msg
 renderHero =
-    section [ class "hero is-info is-bold" ]
+    section [ class "hero is-primary is-bold" ]
         [ div [ class "hero-body" ]
             [ div [ class "container" ]
                 [ div [ class "columns is-vcentered" ]
@@ -218,17 +220,17 @@ renderTZ tz users showEmptyTZ =
 renderUser : User -> Html Msg
 renderUser user =
     let
-        textColor =
-            if user.presence == "active" then
-                "green"
-            else
-                "red"
+        baseClass =
+            "user is-narrow column"
 
-        -- style [ ( "color", textColor ) ]
+        rootClass =
+            if user.presence == "active" then
+                baseClass ++ " active"
+            else
+                baseClass
     in
-        div [ class "user is-narrow column" ]
-            [ img [ src user.image ]
-                []
+        a [ class rootClass, href (getUserSlackUrl user), target "_blank" ]
+            [ img [ src user.image ] []
             , br [] []
             , span [] [ text user.name ]
             ]
@@ -241,6 +243,11 @@ renderUser user =
 getUsersInTZ : Float -> List User -> List User
 getUsersInTZ tzOffset users =
     List.filter (\user -> user.tzOffset == tzOffset) users
+
+
+getUserSlackUrl : User -> String
+getUserSlackUrl user =
+    Config.slackUrl ++ "/team/" ++ user.slackId
 
 
 main : Program String Model Msg

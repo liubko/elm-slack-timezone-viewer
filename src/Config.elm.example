@@ -1,6 +1,11 @@
-module Config exposing (slack_token)
+module Config exposing (slackToken, slackUrl)
 
 
-slack_token : String
-slack_token =
+slackToken : String
+slackToken =
     "..."
+    
+
+slackUrl : String
+slackUrl =
+    "https://yourTeamName.slack.com"

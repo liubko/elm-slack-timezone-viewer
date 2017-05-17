@@ -17,9 +17,19 @@
   padding: 10px;
 }
 
+.user.active:hover img,
+.user:hover img {
+  border-color: #363636;
+}
+
 .user img {
+  border: 4px solid #F5F5F5;
   border-radius: 50%;
   box-shadow: 0 2px 3px rgba(10,10,10,.1), 0 0 0 1px rgba(10,10,10,.1);
+}
+
+.user.active img {
+  border-color: #00d1b2;
 }
 
 .settings input[type="checkbox"] {
